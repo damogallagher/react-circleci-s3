@@ -16,7 +16,10 @@ jobs:
           steps:
             - run: echo << parameters.deploymentBucket >>
             - run: npm --version
-            - run: npm install test
+            - run: rm -rf node_modules
+            - run: npm install 
+            - run: npm react-scripts 
+            - run: npm test            
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
             - run: sudo python get-pip.py
