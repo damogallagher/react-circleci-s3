@@ -15,6 +15,7 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm --version
+            - run: rm -rf node_modules
             - run: npm install 
             - run: npm install react-scripts 
             - run: npm test            
