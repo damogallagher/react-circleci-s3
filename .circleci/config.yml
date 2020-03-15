@@ -17,7 +17,9 @@ jobs:
             - run: aws --version
             - run: aws s3 ls
             - run: yarn build
-            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete
+            - run: echo $CIRCLE_BRANCH
+            - run: echo $FRONTEND_BUCKET
+            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete  
   deploy-prod:
     executor:
       name: node/default
@@ -34,6 +36,7 @@ jobs:
             - run: aws s3 ls
             - run: yarn build
             - run: echo $CIRCLE_BRANCH
+            - run: echo $FRONTEND_BUCKET
             - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete            
 workflows:
     build-and-test:
