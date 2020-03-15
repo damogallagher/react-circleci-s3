@@ -16,7 +16,8 @@ jobs:
             - run: sudo pip install awscli --upgrade
             - run: aws --version
             - run: aws s3 ls
-            - run: yarn build  
+            - run: yarn build 
+            - run: echo $FRONTEND_BUCKET 
   deploy-test:
     executor:
       name: node/default
@@ -40,12 +41,12 @@ workflows:
       jobs:
       - build
       - deploy-test:
-          context: test
           requires:
             - build 
           filters:
             branches:
               only: develop
+          context: test
       - deploy-prod:
           requires:
             - build 
