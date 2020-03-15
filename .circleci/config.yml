@@ -46,7 +46,7 @@ workflows:
           context: prod
       - deploy-application:
           type: approval
-          name: deploy-prod-app
+          name: approve-prod-app-deployment
           filters:
             branches:
               only: master
