@@ -36,15 +36,16 @@ workflows:
               only: develop
           context: test
       - deploy-application:
-          type: approval
           requires:
             - deploy-prod-app
           name: deploy-prod
+          deploymentBucket: $FRONTEND_BUCKET
           filters:
             branches:
               only: master
           context: prod
       - deploy-application:
+          type: approval
           name: deploy-prod-app
           deploymentBucket: $FRONTEND_BUCKET
           filters:
