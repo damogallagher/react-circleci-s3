@@ -14,9 +14,11 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: echo << parameters.deploymentBucket >>
             - run: npm --version
-            - run: npm install test
+            - run: rm -rf node_modules
+            - run: npm install 
+            - run: npm install react-scripts
+            - run: npm test            
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
             - run: sudo python get-pip.py
@@ -26,7 +28,7 @@ jobs:
             - run: yarn build 
             - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete      
 workflows:
-    build-and-test:
+    deploy-frontend-client:
       jobs:
       - deploy-application:
           name: deploy-test
