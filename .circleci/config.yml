@@ -46,8 +46,10 @@ workflows:
             branches:
               only: develop
           context: test
-      - deploy-prod:
+      - deploy-prod-step:
           type: approval
+          requires:
+            - deploy-prod
           filters:
             branches:
               only: master
