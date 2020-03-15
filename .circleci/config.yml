@@ -14,10 +14,10 @@ jobs:
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
             - run: sudo python get-pip.py
             - run: sudo pip install awscli --upgrade
+            - run: echo $FRONTEND_BUCKET 
             - run: aws --version
             - run: aws s3 ls
             - run: yarn build 
-            - run: echo $FRONTEND_BUCKET 
   deploy-test:
     executor:
       name: node/default
