@@ -2,13 +2,15 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 jobs:
-  build:
+  deploy-test:
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
           steps:
+          steps:
+            - run: npm --version
             - run: npm install test
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
@@ -18,15 +20,7 @@ jobs:
             - run: aws --version
             - run: aws s3 ls
             - run: yarn build 
-  deploy-test:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - node/with-cache:
-          steps:
-            - run: npm --version 
-            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete
+            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete  
   deploy-prod:
     executor:
       name: node/default
@@ -35,21 +29,25 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm --version
+            - run: npm install test
+            - run: sudo apt-get update && sudo apt-get install -y python-dev
+            - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
+            - run: sudo python get-pip.py
+            - run: sudo pip install awscli --upgrade
+            - run: echo $FRONTEND_BUCKET 
+            - run: aws --version
+            - run: aws s3 ls
+            - run: yarn build 
             - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete      
 workflows:
     build-and-test:
       jobs:
-      - build
       - deploy-test:
-          requires:
-            - build 
           filters:
             branches:
               only: develop
           context: test
       - deploy-prod:
-          requires:
-            - build 
           filters:
             branches:
               only: master
