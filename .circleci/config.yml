@@ -47,7 +47,6 @@ workflows:
       - deploy-application:
           type: approval
           name: deploy-prod-app
-          deploymentBucket: $FRONTEND_BUCKET
           filters:
             branches:
               only: master
