@@ -16,8 +16,7 @@ jobs:
             - run: sudo pip install awscli --upgrade
             - run: aws --version
             - run: aws s3 ls
-            - run: yarn build
-            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete  
+            - run: yarn build  
   deploy-test:
     executor:
       name: node/default
@@ -26,6 +25,7 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm --version 
+            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete
   deploy-prod:
     executor:
       name: node/default
@@ -33,7 +33,8 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: npm --version       
+            - run: npm --version
+            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete      
 workflows:
     build-and-test:
       jobs:
