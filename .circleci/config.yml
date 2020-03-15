@@ -38,7 +38,7 @@ workflows:
       - deploy-application:
           type: approval
           requires:
-            - deploy-prod
+            - deploy-prod-app
           name: deploy-prod
           filters:
             branches:
