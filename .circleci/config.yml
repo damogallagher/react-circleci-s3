@@ -18,7 +18,16 @@ jobs:
             - run: aws s3 ls
             - run: yarn build
             - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete  
-        
+  deploy-test:
+    executor:
+      name: node/default
+    steps:
+      - checkout  
+  deploy-prod:
+    executor:
+      name: node/default
+    steps:
+      - checkout       
 workflows:
     build-and-test:
       jobs:
