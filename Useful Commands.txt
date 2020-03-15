@@ -1,0 +1,5 @@
+Build project and deploy to test and prod
+yarn build
+aws s3 sync build/ s3://dgallagher-test --delete --profile personal
+aws s3 sync build/ s3://dgallagher-prod --delete --profile personal
+
