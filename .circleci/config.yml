@@ -9,8 +9,7 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: npm install
-            - run: npm test
+            - run: npm install test
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
             - run: sudo python get-pip.py
@@ -18,7 +17,7 @@ jobs:
             - run: aws --version
             - run: aws s3 ls
             - run: yarn build
-            - run: aws s3 sync build/ s3://${FRONTEND_BUCKET} --delete
+            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete
   deploy-prod:
     executor:
       name: node/default
@@ -26,8 +25,7 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: npm install
-            - run: npm test
+            - run: npm install test
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
             - run: sudo python get-pip.py
@@ -35,7 +33,8 @@ jobs:
             - run: aws --version
             - run: aws s3 ls
             - run: yarn build
-            - run: aws s3 sync build/ s3://${FRONTEND_BUCKET} --delete            
+            - run: echo $CIRCLE_BRANCH
+            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete            
 workflows:
     build-and-test:
       jobs:
