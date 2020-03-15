@@ -2,29 +2,42 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 jobs:
-  build:
+  deploy-test:
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
           steps:
+            - run: npm --version
             - run: npm install test
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
             - run: sudo python get-pip.py
             - run: sudo pip install awscli --upgrade
+            - run: echo $FRONTEND_BUCKET 
             - run: aws --version
             - run: aws s3 ls
-            - run: yarn build
+            - run: yarn build 
             - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete  
-  deploy-test:
-    requires:
-        - build  
   deploy-prod:
-    type: approval
-    requires:
-        - build             
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm --version
+            - run: npm install test
+            - run: sudo apt-get update && sudo apt-get install -y python-dev
+            - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
+            - run: sudo python get-pip.py
+            - run: sudo pip install awscli --upgrade
+            - run: echo $FRONTEND_BUCKET 
+            - run: aws --version
+            - run: aws s3 ls
+            - run: yarn build 
+            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete      
 workflows:
     build-and-test:
       jobs:
@@ -34,6 +47,7 @@ workflows:
               only: develop
           context: test
       - deploy-prod:
+          type: approval
           filters:
             branches:
               only: master
