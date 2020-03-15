@@ -2,38 +2,25 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 jobs:
-  deploy-test:
+  deploy-application:
     executor:
       name: node/default
+    parameters:
+      deploymentBucket:
+        description: "The bucket to deploy the application to"
+        default: "null"
+        type: string
     steps:
       - checkout
       - node/with-cache:
           steps:
+            - run: echo << parameters.deploymentBucket >>
             - run: npm --version
             - run: npm install test
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
             - run: sudo python get-pip.py
             - run: sudo pip install awscli --upgrade
-            - run: echo $FRONTEND_BUCKET 
-            - run: aws --version
-            - run: aws s3 ls
-            - run: yarn build 
-            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete  
-  deploy-prod:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - node/with-cache:
-          steps:
-            - run: npm --version
-            - run: npm install test
-            - run: sudo apt-get update && sudo apt-get install -y python-dev
-            - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
-            - run: sudo python get-pip.py
-            - run: sudo pip install awscli --upgrade
-            - run: echo $FRONTEND_BUCKET 
             - run: aws --version
             - run: aws s3 ls
             - run: yarn build 
@@ -41,15 +28,16 @@ jobs:
 workflows:
     build-and-test:
       jobs:
-      - deploy-test:
+      - deploy-application:
+          name: deploy-test
+          deploymentBucket: $FRONTEND_BUCKET
           filters:
             branches:
               only: develop
           context: test
-      - deploy-prod-step:
-          type: approval
-          requires:
-            - deploy-prod
+      - deploy-application:
+          name: deploy-prod
+          deploymentBucket: $FRONTEND_BUCKET
           filters:
             branches:
               only: master
