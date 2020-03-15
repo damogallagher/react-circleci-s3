@@ -17,7 +17,7 @@ jobs:
             - run: npm --version
             - run: rm -rf node_modules
             - run: npm install 
-            - run: npm install react-scripts 
+            - run: npm install react-scripts  -g
             - run: npm test            
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
