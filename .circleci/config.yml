@@ -22,12 +22,18 @@ jobs:
     executor:
       name: node/default
     steps:
-      - checkout  
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm --version 
   deploy-prod:
     executor:
       name: node/default
     steps:
-      - checkout       
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm --version       
 workflows:
     build-and-test:
       jobs:
