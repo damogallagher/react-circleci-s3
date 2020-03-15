@@ -37,7 +37,7 @@ workflows:
           context: test
       - deploy-application:
           requires:
-            - deploy-prod-app
+            - approve-prod-app-deployment
           name: deploy-prod
           deploymentBucket: $FRONTEND_BUCKET
           filters:
