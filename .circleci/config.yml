@@ -9,9 +9,6 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: echo $CIRCLE_BRANCH
-            - run: echo "Here 1"
-            - run: echo $FRONTEND_BUCKET
             - run: npm install test
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
@@ -27,10 +24,7 @@ jobs:
     steps:
       - checkout
       - node/with-cache:
-          steps:
-            - run: echo $CIRCLE_BRANCH
-            - run: echo "Here 1"
-            - run: echo $FRONTEND_BUCKET            
+          steps:       
             - run: npm install test
             - run: sudo apt-get update && sudo apt-get install -y python-dev
             - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
