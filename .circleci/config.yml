@@ -1,4 +1,4 @@
-version: 2.1
+version: 2.
 orbs:
   node: circleci/node@1.1.6
 jobs:
@@ -18,22 +18,21 @@ jobs:
             - run: aws s3 ls
             - run: yarn build
             - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete  
-  deploy-test:
-    requires:
-        - build  
-  deploy-prod:
-    type: approval
-    requires:
-        - build             
+        
 workflows:
     build-and-test:
       jobs:
+      - build
       - deploy-test:
+          requires:
+            - build 
           filters:
             branches:
               only: develop
           context: test
       - deploy-prod:
+          requires:
+            - build 
           filters:
             branches:
               only: master
