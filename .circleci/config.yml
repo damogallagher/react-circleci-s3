@@ -39,7 +39,7 @@ jobs:
 workflows:
     build-and-test:
       jobs:
-        - deploy-test:
+      - deploy-test:
           filters:
             branches:
               only: develop
