@@ -18,18 +18,33 @@ jobs:
             - run: aws s3 ls
             - run: yarn build
             - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete  
-     
+  deploy-test:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm --version 
+  deploy-prod:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm --version       
 workflows:
     build-and-test:
       jobs:
       - build
       - deploy-test:
+          context: test
           requires:
             - build 
           filters:
             branches:
               only: develop
-          context: test
       - deploy-prod:
           requires:
             - build 
