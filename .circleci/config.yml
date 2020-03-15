@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 jobs:
-  build-and-test:
+  deploy-test:
     executor:
       name: node/default
     steps:
@@ -17,8 +17,36 @@ jobs:
             - run: sudo pip install awscli --upgrade
             - run: aws --version
             - run: aws s3 ls
-            - run: yarn run deploy
+            - run: yarn build
+            - run: aws s3 sync build/ s3://${FRONTEND_BUCKET} --delete
+  deploy-prod:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm install
+            - run: npm test
+            - run: sudo apt-get update && sudo apt-get install -y python-dev
+            - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
+            - run: sudo python get-pip.py
+            - run: sudo pip install awscli --upgrade
+            - run: aws --version
+            - run: aws s3 ls
+            - run: yarn build
+            - run: aws s3 sync build/ s3://${FRONTEND_BUCKET} --delete            
 workflows:
     build-and-test:
       jobs:
-        - build-and-test 
+        - deploy-test:
+          filters:
+            branches:
+              only: develop
+          context: test
+      - deploy-prod:
+          filters:
+            branches:
+              only: master
+          context: prod
+         
