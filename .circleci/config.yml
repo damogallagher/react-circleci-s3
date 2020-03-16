@@ -26,13 +26,13 @@ jobs:
             - run: aws --version
             - run: aws s3 ls
             - run: yarn build 
-            - run: aws s3 sync build/ s3://$FRONTEND_BUCKET --delete      
+            - run: aws s3 sync build/ s3://<< parameters.deploymentBucket >> --delete      
 workflows:
     deploy-frontend-client:
       jobs:
       - deploy-application:
           name: deploy-test
-          deploymentBucket: $FRONTEND_BUCKET
+          deploymentBucket: dgallagher-test
           filters:
             branches:
               only: develop
@@ -41,7 +41,7 @@ workflows:
           requires:
             - approve-prod-app-deployment
           name: deploy-prod
-          deploymentBucket: $FRONTEND_BUCKET
+          deploymentBucket: dgallagher-prod
           filters:
             branches:
               only: master
